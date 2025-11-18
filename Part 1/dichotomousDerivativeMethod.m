@@ -2,7 +2,7 @@ function [k, a_list, b_list, df_evals] = dichotomousDerivativeMethod(diff_func, 
 
     syms x;
 
-    % Step 0: Precompute n from theory
+    % Precompute n from theory
     n = ceil( log( l / (b - a) ) / log(1/2) );
 
     % Initialization
@@ -15,16 +15,17 @@ function [k, a_list, b_list, df_evals] = dichotomousDerivativeMethod(diff_func, 
 
     df_evals = 0;
 
+    % Main loop
     while true
 
-        % Step 1: Midpoint
+        % Calculation of the midpoint
         x_k = (a_k + b_k) / 2;
 
         diff_f_xk = subs(diff_func, x, x_k);
         df_evals = df_evals + 1;
 
         % Derivative check
-        if abs(diff_f_xk) < 1e-12
+        if abs(diff_f_xk) < 1e-12   % I don't use exactly =0, because float numbers are never exact and numerical derivatives give small residual error
             % Minimum found exactly
             a_k = x_k;
             b_k = x_k;
@@ -32,11 +33,9 @@ function [k, a_list, b_list, df_evals] = dichotomousDerivativeMethod(diff_func, 
             b_list(end+1) = b_k;
             return;
         elseif diff_f_xk > 0
-            % Step 2
             a_k = a_k;
             b_k = x_k;
         else
-            % Step 3
             a_k = x_k;
             b_k = b_k;
         end
@@ -45,7 +44,7 @@ function [k, a_list, b_list, df_evals] = dichotomousDerivativeMethod(diff_func, 
         a_list(end+1) = a_k;
         b_list(end+1) = b_k;
 
-        % Step 4: Check if k = n
+        % Check if k = n
         if k == n
             return;
         end
